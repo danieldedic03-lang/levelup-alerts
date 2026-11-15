@@ -4,70 +4,65 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Level Up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
 <style>
   html,body{margin:0;height:100%;overflow:hidden;background:transparent}
   body{display:flex;align-items:center;justify-content:center;font-family:'Lobster',cursive}
-  #stage{position:relative;width:100vw;height:100vh;animation:outro .6s 7.4s ease-in forwards}
+  #stage{position:relative;width:100vw;height:100vh;
+    animation:outro .6s 7.4s ease-in forwards}
   @keyframes outro{to{opacity:0;transform:scale(1.15)}}
   canvas{position:absolute;inset:0;width:100%;height:100%}
 
-  .group{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-    display:flex;flex-direction:column;align-items:center;perspective:90vmin}
+  /* centre group */
+  .group{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);
+    display:flex;flex-direction:column;align-items:center}
 
-  .badge{position:relative;margin-bottom:-6vmin;opacity:0;
-    animation:popIn .8s 1.1s cubic-bezier(.3,1.7,.5,1) forwards}
-  @keyframes popIn{from{opacity:0;transform:scale(0) rotate(-180deg)}to{opacity:1;transform:scale(1) rotate(0)}}
-  .float{animation:float 2.2s 1.9s ease-in-out infinite}
-  @keyframes float{0%,100%{transform:translate(0,0) rotate(0)}
-    25%{transform:translate(-3vmin,-3vmin) rotate(-5deg)}
-    50%{transform:translate(0,-5vmin) rotate(0)}
-    75%{transform:translate(3vmin,-3vmin) rotate(5deg)}}
-  .crown{display:block;width:20vmin;margin:0 auto -6vmin;position:relative;z-index:2;
-    filter:drop-shadow(0 0 1.5vmin #ff3cc7);animation:bob 1.1s 1.8s ease-in-out infinite alternate}
-  @keyframes bob{to{transform:translateY(-2.5vmin) rotate(-8deg)}}
-  .inf{font-family:Arial,sans-serif;font-weight:900;font-size:68vmin;line-height:.85;
-    background:linear-gradient(180deg,#e9fdff 0%,#00e5ff 30%,#1e6bff 50%,#b44cff 68%,#ff3cc7 100%);
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-    animation:spin 2.6s 1.8s cubic-bezier(.6,0,.3,1) infinite,glow 1.8s 1.2s ease-in-out infinite}
-  @keyframes spin{
-    0%{transform:perspective(70vmin) rotateY(0) rotateX(0) scale(1)}
-    30%{transform:perspective(70vmin) rotateY(0) rotateX(15deg) scale(1.12)}
-    65%{transform:perspective(70vmin) rotateY(360deg) rotateX(-10deg) scale(.95)}
-    100%{transform:perspective(70vmin) rotateY(360deg) rotateX(0) scale(1)}}
-  @keyframes glow{
-    0%,100%{filter:drop-shadow(0 .8vmin 0 #2a0a5e) drop-shadow(0 0 2vmin #00e5ff) drop-shadow(0 0 6vmin #1e6bff)}
-    33%{filter:drop-shadow(0 .8vmin 0 #2a0a5e) drop-shadow(0 0 3vmin #b44cff) drop-shadow(0 0 9vmin #b44cff)}
-    66%{filter:drop-shadow(0 .8vmin 0 #2a0a5e) drop-shadow(0 0 3vmin #ff3cc7) drop-shadow(0 0 10vmin #ff3cc7)}}
+  /* the character pops up from the bottom-left corner */
+  .buddy{position:absolute;left:-2vmin;bottom:0;width:48vmin;transform-origin:50% 100%;
+    transform:translateY(110%);animation:peek .9s 1.1s cubic-bezier(.3,1.6,.5,1) forwards,
+      sway 1.2s 2s ease-in-out infinite alternate}
+  @keyframes peek{to{transform:translateY(0) rotate(8deg)}}
+  @keyframes sway{from{transform:rotate(8deg)}to{transform:rotate(2deg) translateY(-1.5vmin)}}
+  .buddy img{display:block;width:100%;
+    filter:drop-shadow(0 0 1.2vmin #00e5ff) drop-shadow(0 0 3vmin #b44cff)}
+  .crown{position:absolute;width:20vmin;left:50%;top:-8vmin;margin-left:-12vmin;
+    opacity:0;filter:drop-shadow(0 0 1.5vmin #ff3cc7);
+    animation:crownDrop .6s 1.9s cubic-bezier(.4,1.8,.5,1) forwards, bob 1.6s 2.6s ease-in-out infinite alternate}
+  @keyframes crownDrop{from{opacity:0;transform:translateY(-40vmin) rotate(-30deg)}to{opacity:1;transform:rotate(-12deg)}}
+  @keyframes bob{from{transform:rotate(-12deg)}to{transform:translateY(-1.5vmin) rotate(-4deg)}}
+  /* neon thumbs-up bubble */
+  .thumb{position:absolute;left:35vmin;top:3vmin;width:17vmin;height:17vmin;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-size:10vmin;
+    background:radial-gradient(circle at 35% 30%,#3b1a7a,#14052e);
+    border:.7vmin solid #00e5ff;box-shadow:0 0 2vmin #00e5ff,0 0 5vmin #ff3cc7,inset 0 0 2vmin #b44cff;
+    opacity:0;animation:thumbPop .5s 2.3s cubic-bezier(.3,2,.5,1) forwards, thumbWig .5s 2.9s ease-in-out infinite alternate}
+  @keyframes thumbPop{from{opacity:0;transform:scale(0) rotate(-40deg)}to{opacity:1;transform:scale(1)}}
+  @keyframes thumbWig{from{transform:rotate(-10deg) scale(1)}to{transform:rotate(12deg) scale(1.12)}}
 
-  .word{position:relative;display:block;font-size:32vmin;line-height:.8;white-space:nowrap;
-    transform:rotateX(14deg) rotate(-8deg) skewX(-6deg)}
+  /* LEVEL UP! chunky 3D chrome text */
+  .word{position:relative;display:block;font-size:30vmin;line-height:.8;
+    transform:rotate(-8deg) skewX(-6deg);white-space:nowrap}
   .word span{display:block}
-  .word .back{position:absolute;inset:0;color:#3b0f80;-webkit-text-stroke:2.6vmin #2a0a5e;
-    text-shadow:
-      .3vmin .3vmin 0 #4a14a0,.6vmin .6vmin 0 #4a14a0,.9vmin .9vmin 0 #42118f,
-      1.2vmin 1.2vmin 0 #3b0f80,1.5vmin 1.5vmin 0 #350d73,1.8vmin 1.8vmin 0 #2f0c66,
-      2.1vmin 2.1vmin 0 #2a0a5e,2.4vmin 2.4vmin 0 #250952,2.7vmin 2.7vmin 0 #200846,
-      3vmin 3vmin 0 #1a0638,3.3vmin 3.3vmin 0 #15052e,3.6vmin 3.6vmin 0 #100424,
-      4.5vmin 5vmin 3vmin rgba(0,0,0,.7),
-      0 0 6vmin #ff3cc7,0 0 12vmin #1e6bff}
+  .word .back{position:absolute;inset:0;color:#2a0a5e;
+    -webkit-text-stroke:2.2vmin #2a0a5e;
+    text-shadow:.4vmin .4vmin 0 #3b0f80,.8vmin .8vmin 0 #3b0f80,1.2vmin 1.2vmin 0 #2a0a5e,
+      1.6vmin 1.6vmin 0 #2a0a5e,2vmin 2vmin 0 #1a0638,0 0 6vmin #ff3cc7,0 0 10vmin #1e6bff}
   .word .front{position:relative;
-    background:linear-gradient(180deg,#ffffff 0%,#c9fbff 15%,#00e5ff 40%,#1e6bff 50%,#b44cff 64%,#ff3cc7 85%,#ffd6f3 100%);
+    background:linear-gradient(180deg,#ffffff 0%,#7ff4ff 22%,#00e5ff 42%,#1e6bff 50%,#b44cff 66%,#ff3cc7 88%,#ffc2ee 100%);
     -webkit-background-clip:text;background-clip:text;color:transparent;
-    -webkit-text-stroke:.55vmin #ffffff;
-    filter:drop-shadow(0 0 .8vmin rgba(255,255,255,.9)) drop-shadow(0 0 3vmin #00e5ff)}
-  .w1{opacity:0;animation:swingL .8s .35s cubic-bezier(.25,1.6,.5,1) forwards,wob1 1.6s 1.4s ease-in-out infinite alternate}
-  .w2{opacity:0;margin-top:-1vmin;margin-left:8vmin;
-    animation:swingR .8s .6s cubic-bezier(.25,1.6,.5,1) forwards,wob2 1.6s 1.6s ease-in-out infinite alternate}
+    -webkit-text-stroke:.35vmin rgba(255,255,255,.85)}
+  .w1{opacity:0;animation:swingL .8s .35s cubic-bezier(.25,1.6,.5,1) forwards, wob1 2s 1.4s ease-in-out infinite alternate}
+  .w2{opacity:0;margin-top:-2vmin;margin-left:8vmin;
+    animation:swingR .8s .6s cubic-bezier(.25,1.6,.5,1) forwards, wob2 2s 1.6s ease-in-out infinite alternate}
   @keyframes swingL{from{opacity:0;transform:translate(-80vw,60vh) rotate(-40deg) scale(.6)}
-    to{opacity:1;transform:rotateX(14deg) rotate(-8deg) skewX(-6deg)}}
+                    to{opacity:1;transform:rotate(-8deg) skewX(-6deg)}}
   @keyframes swingR{from{opacity:0;transform:translate(80vw,60vh) rotate(40deg) scale(.6)}
-    to{opacity:1;transform:rotateX(14deg) rotate(-8deg) skewX(-6deg)}}
-  @keyframes wob1{from{transform:rotateX(14deg) rotate(-8deg) skewX(-6deg) scale(1)}
-    to{transform:rotateX(6deg) rotate(-5deg) skewX(-6deg) scale(1.1)}}
-  @keyframes wob2{from{transform:rotateX(14deg) rotate(-8deg) skewX(-6deg) scale(1)}
-    to{transform:rotateX(6deg) rotate(-11deg) skewX(-6deg) scale(1.1)}}
+                    to{opacity:1;transform:rotate(-8deg) skewX(-6deg)}}
+  @keyframes wob1{from{transform:rotate(-8deg) skewX(-6deg)}to{transform:rotate(-5deg) skewX(-6deg) scale(1.03)}}
+  @keyframes wob2{from{transform:rotate(-8deg) skewX(-6deg)}to{transform:rotate(-11deg) skewX(-6deg) scale(1.03)}}
 
+  /* first flash */
   .flash{position:absolute;inset:0;background:radial-gradient(circle,#fff 0%,#00e5ff 30%,rgba(180,76,255,.5) 60%,transparent 80%);
     opacity:0;animation:flash .5s .3s ease-out}
   @keyframes flash{0%{opacity:0}15%{opacity:.9}100%{opacity:0}}
@@ -77,72 +72,80 @@
 <div id="stage">
   <div class="flash"></div>
   <canvas id="fx"></canvas>
+
+  <div class="buddy">
+      <svg class="crown" viewBox="0 0 100 70" aria-hidden="true">
+        <defs>
+          <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ffffff"/>
+            <stop offset=".35" stop-color="#00e5ff"/>
+            <stop offset=".7" stop-color="#b44cff"/>
+            <stop offset="1" stop-color="#ff3cc7"/>
+          </linearGradient>
+        </defs>
+        <path d="M8 60 L4 18 L28 38 L50 6 L72 38 L96 18 L92 60 Z" fill="url(#cg)" stroke="#2a0a5e" stroke-width="4" stroke-linejoin="round"/>
+        <rect x="8" y="56" width="84" height="10" rx="4" fill="url(#cg)" stroke="#2a0a5e" stroke-width="4"/>
+        <circle cx="50" cy="6" r="5" fill="#ff3cc7" stroke="#2a0a5e" stroke-width="3"/>
+        <circle cx="4" cy="18" r="4" fill="#00e5ff" stroke="#2a0a5e" stroke-width="3"/>
+        <circle cx="96" cy="18" r="4" fill="#00e5ff" stroke="#2a0a5e" stroke-width="3"/>
+      </svg>
+      <img src="character.png" alt="">
+      <div class="thumb">👍</div>
+  </div>
+
   <div class="group">
-    <div class="badge">
-      <div class="float">
-        <svg class="crown" viewBox="0 0 100 70" aria-hidden="true">
-          <defs>
-            <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#ffffff"/>
-              <stop offset=".35" stop-color="#00e5ff"/>
-              <stop offset=".7" stop-color="#b44cff"/>
-              <stop offset="1" stop-color="#ff3cc7"/>
-            </linearGradient>
-          </defs>
-          <path d="M8 60 L4 18 L28 38 L50 6 L72 38 L96 18 L92 60 Z" fill="url(#cg)" stroke="#2a0a5e" stroke-width="4" stroke-linejoin="round"/>
-          <rect x="8" y="56" width="84" height="10" rx="4" fill="url(#cg)" stroke="#2a0a5e" stroke-width="4"/>
-          <circle cx="50" cy="6" r="5" fill="#ff3cc7" stroke="#2a0a5e" stroke-width="3"/>
-          <circle cx="4" cy="18" r="4" fill="#00e5ff" stroke="#2a0a5e" stroke-width="3"/>
-          <circle cx="96" cy="18" r="4" fill="#00e5ff" stroke="#2a0a5e" stroke-width="3"/>
-        </svg>
-        <div class="inf">∞</div>
-      </div>
-    </div>
     <div class="word w1"><span class="back">level</span><span class="front">level</span></div>
     <div class="word w2"><span class="back">up!</span><span class="front">up!</span></div>
   </div>
 </div>
 
 <script>
-  const c=document.getElementById('fx'),x=c.getContext('2d');
-  const cols=['#00e5ff','#1e6bff','#b44cff','#ff3cc7','#ffffff'];
-  let W,H,parts=[];
-  function size(){W=c.width=innerWidth*devicePixelRatio;H=c.height=innerHeight*devicePixelRatio;}
-  size();addEventListener('resize',size);
+  // floating neon sparks
+  const c = document.getElementById('fx'), x = c.getContext('2d');
+  const cols = ['#00e5ff','#1e6bff','#b44cff','#ff3cc7','#ffffff'];
+  let W, H, parts = [];
+  function size(){ W = c.width = innerWidth * devicePixelRatio; H = c.height = innerHeight * devicePixelRatio; }
+  size(); addEventListener('resize', size);
   function spark(burst){
-    const a=Math.random()*Math.PI*2,s=burst?(4+Math.random()*10):(1+Math.random()*2);
-    return{x:burst?W/2:Math.random()*W,y:burst?H/2:H+10,
-      vx:burst?Math.cos(a)*s:(Math.random()-.5),vy:burst?Math.sin(a)*s:-s*2,
-      life:1,len:6+Math.random()*18,col:cols[Math.random()*cols.length|0]};
+    const a = Math.random() * Math.PI * 2, s = burst ? (4 + Math.random() * 10) : (1 + Math.random() * 2);
+    return { x: burst ? W/2 : Math.random() * W, y: burst ? H/2 : H + 10,
+      vx: burst ? Math.cos(a) * s : (Math.random() - .5), vy: burst ? Math.sin(a) * s : -s * 2,
+      life: 1, len: 6 + Math.random() * 18, col: cols[Math.random() * cols.length | 0] };
   }
-  setTimeout(()=>{for(let i=0;i<140;i++)parts.push(spark(true));},700);
-  const t0=performance.now();
+  setTimeout(() => { for (let i = 0; i < 140; i++) parts.push(spark(true)); }, 700);
+  let t0 = performance.now();
   (function loop(t){
-    const e=t-t0;
-    if(e>700&&e<7400&&Math.random()<.6)parts.push(spark(false));
-    x.clearRect(0,0,W,H);
-    x.globalCompositeOperation='lighter';
-    parts=parts.filter(p=>p.life>0);
-    for(const p of parts){
-      p.x+=p.vx*devicePixelRatio;p.y+=p.vy*devicePixelRatio;p.vx*=.985;p.vy*=.985;p.life-=.008;
-      x.strokeStyle=p.col;x.globalAlpha=Math.max(p.life,0);x.shadowColor=p.col;x.shadowBlur=12;
-      x.lineWidth=2.5*devicePixelRatio;
-      x.beginPath();x.moveTo(p.x,p.y);x.lineTo(p.x-p.vx*p.len*.4,p.y-p.vy*p.len*.4);x.stroke();
+    if (t - t0 > 700 && t - t0 < 7400 && Math.random() < .6) parts.push(spark(false));
+    x.clearRect(0, 0, W, H);
+    x.globalCompositeOperation = 'lighter';
+    parts = parts.filter(p => p.life > 0);
+    for (const p of parts){
+      p.x += p.vx * devicePixelRatio; p.y += p.vy * devicePixelRatio; p.vx *= .985; p.vy *= .985;
+      p.life -= .008;
+      x.strokeStyle = p.col; x.globalAlpha = Math.max(p.life, 0);
+      x.shadowColor = p.col; x.shadowBlur = 12;
+      x.lineWidth = 2.5 * devicePixelRatio;
+      x.beginPath(); x.moveTo(p.x, p.y);
+      x.lineTo(p.x - p.vx * p.len * .4, p.y - p.vy * p.len * .4); x.stroke();
     }
-    if(e>200&&e<8000){
-      x.globalAlpha=Math.min(1,(e-200)/300)*(0.75+Math.random()*.25);
-      const m=14*devicePixelRatio;
-      const edges=[[m,m,W-m,m],[W-m,m,W-m,H-m],[W-m,H-m,m,H-m],[m,H-m,m,m]];
-      edges.forEach((g,i)=>{
-        const col=i%2?'#ff3cc7':'#00e5ff';
-        x.strokeStyle=col;x.shadowColor=col;x.shadowBlur=25;x.lineWidth=3*devicePixelRatio;
-        x.beginPath();x.moveTo(g[0],g[1]);
-        for(let k=1;k<28;k++){
-          const f=k/28,jit=(Math.random()-.5)*22*devicePixelRatio;
-          const px=g[0]+(g[2]-g[0])*f,py=g[1]+(g[3]-g[1])*f;
-          if(g[1]===g[3])x.lineTo(px,py+jit);else x.lineTo(px+jit,py);
+    // crackling neon lightning around the edges
+    const e = t - t0;
+    if (e > 200 && e < 8000){
+      x.globalAlpha = Math.min(1, (e - 200) / 300) * (0.75 + Math.random() * .25);
+      const m = 14 * devicePixelRatio;
+      const edges = [[m,m,W-m,m],[W-m,m,W-m,H-m],[W-m,H-m,m,H-m],[m,H-m,m,m]];
+      edges.forEach((g, i) => {
+        const col = i % 2 ? '#ff3cc7' : '#00e5ff';
+        x.strokeStyle = col; x.shadowColor = col; x.shadowBlur = 25;
+        x.lineWidth = 3 * devicePixelRatio;
+        x.beginPath(); x.moveTo(g[0], g[1]);
+        const steps = 28;
+        for (let k = 1; k < steps; k++){
+          const f = k / steps, jit = (Math.random() - .5) * 22 * devicePixelRatio;
+          const px = g[0] + (g[2] - g[0]) * f, py = g[1] + (g[3] - g[1]) * f;
+          if (g[1] === g[3]) x.lineTo(px, py + jit); else x.lineTo(px + jit, py);
         }
-        x.lineTo(g[2],g[3]);x.stroke();
+        x.lineTo(g[2], g[3]); x.stroke();
       });
     }
     requestAnimationFrame(loop);
